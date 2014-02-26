@@ -11,3 +11,7 @@ body {
 header {
   text-align: center;
 }
+
+#result {
+  font-size: 80px;
+}
