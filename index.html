@@ -1,32 +1,46 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Weather or Not? | A simple weather application</title>
     <meta charset="utf-8" />
+    <meta name="description" content="Get the current weather for any location.">
     <link rel="stylesheet" href="style.css" type="text/css" />
   </head>
 
   <body> 
     <div class="content">
       <header>
-        <h1>Hello World</h1>
-        <h2>Weather or Not?</h2>
+        <h1>Weather or Not?</h1>
         <div class="locationForm">
-          <input type="text" name="location" id="location" />
-          <button id="submit" onclick="getWeather()">What's the weather?</button>
+          <input type="text" id="loc" name="location" placeholder="Enter a city" autofocus autocomplete="off"/>
+          <div>
+            <button id="submit" onclick="getWeather()">Weather, please</button>
+            <button id="submit" onclick="getWeather()">Not</button>
+          </div>
         </div>
         <div id="result"></div>
+        <div id="lat"></div>
+        <div id="long"></div>
       </header>
     </div>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
   <script type="text/javascript">
-    //var url = "http://api.openweathermap.org/data/2.5/weather?q=London,uk";
     var url = "http://api.openweathermap.org/data/2.5/weather?q=";
 
+    $("#loc").keyup(function(event){
+        if(event.keyCode == 13){
+          $("#submit").click();
+        }
+    });
+
     function getWeather() {
-      var city = $("#location").val();
+      var city = $("#loc").val();
       $.getJSON(url + city, function(data) {
+          console.log(data);
           $("#result").text(kelvinToFahrenheit(data.main.temp));
+          $("#lat").text("Lat: " + data.coord.lat);
+          $("#long").text("Long: " + data.coord.lon);
       });
     };
 
@@ -34,6 +48,5 @@
       return (1.8 * (temp - 273.15) + 32);
     };
   </script>
-
   </body>
 </html>
