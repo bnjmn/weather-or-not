@@ -12,6 +12,9 @@ header {
   text-align: center;
 }
 
-#result {
+#temp {
   font-size: 80px;
+}
+.results {
+  font-size: 55px;
 }

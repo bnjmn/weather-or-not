@@ -9,19 +9,19 @@
 
   <body> 
     <div class="content">
-      <header>
         <h1>Weather or Not?</h1>
         <div class="locationForm">
-          <input type="text" id="loc" name="location" placeholder="Enter a city" autofocus autocomplete="off"/>
+          <input type="text" id="loc" name="location" placeholder="Enter a city. Press enter." autofocus autocomplete="off"/>
           <div>
             <button id="submit" onclick="getWeather()">Weather, please</button>
-            <button id="submit" onclick="getWeather()">Not</button>
+            <button id="not" onclick="getPun()">Not</button>
           </div>
         </div>
-        <div id="result"></div>
-        <div id="lat"></div>
-        <div id="long"></div>
-      </header>
+        <div class="results">
+          <div id="temp"></div>
+          <div id="lat"></div>
+          <div id="long"></div>
+        </div>
     </div>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -38,7 +38,8 @@
       var city = $("#loc").val();
       $.getJSON(url + city, function(data) {
           console.log(data);
-          $("#result").text(kelvinToFahrenheit(data.main.temp));
+          var temp = kelvinToFahrenheit(data.main.temp).toFixed(1);
+          $("#temp").html(temp + " &deg;F" );
           $("#lat").text("Lat: " + data.coord.lat);
           $("#long").text("Long: " + data.coord.lon);
       });
@@ -47,6 +48,23 @@
     function kelvinToFahrenheit(temp) {
       return (1.8 * (temp - 273.15) + 32);
     };
+    
+    var puns;
+    $.getJSON('puns.json', function(response) {
+        puns = response;
+        $(window).trigger('JSONready');
+    });
+
+    function getPun() {
+      $("#lat").text(puns[Math.floor(Math.random() * puns.length)]);
+    };
+
+    $(window).on('JSONready', function() {
+      for (var i = 0; i < puns.length; i++ ) {
+        console.log(puns[i]);
+      }
+    });
+
   </script>
   </body>
 </html>
