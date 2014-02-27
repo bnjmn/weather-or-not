@@ -11,21 +11,23 @@
     <div class="content">
         <h1>Weather or Not?</h1>
         <div class="locationForm">
-          <input type="text" id="loc" name="location" placeholder="Enter a city. Press enter." autofocus autocomplete="off"/>
-          <div>
+          <input type="text" id="loc" name="location" placeholder="Enter a city and press enter" autofocus autocomplete="off"/>
+          <div class="buttons">
             <button id="submit" onclick="getWeather()">Weather, please</button>
             <button id="not" onclick="getPun()">Not</button>
           </div>
         </div>
-        <div class="results">
-          <div id="temp"></div>
-          <div id="lat"></div>
-          <div id="long"></div>
-        </div>
+        <div id="results"></div>
     </div>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
   <script type="text/javascript">
+    var puns;
+    $.getJSON('puns.json', function(response) {
+        puns = response;
+        $(window).trigger('PUNSready');
+    });
+
     var url = "http://api.openweathermap.org/data/2.5/weather?q=";
 
     $("#loc").keyup(function(event){
@@ -34,37 +36,64 @@
         }
     });
 
-    function getWeather() {
-      var city = $("#loc").val();
-      $.getJSON(url + city, function(data) {
-          console.log(data);
-          var temp = kelvinToFahrenheit(data.main.temp).toFixed(1);
-          $("#temp").html(temp + " &deg;F" );
-          $("#lat").text("Lat: " + data.coord.lat);
-          $("#long").text("Long: " + data.coord.lon);
-      });
-    };
-
     function kelvinToFahrenheit(temp) {
       return (1.8 * (temp - 273.15) + 32);
     };
-    
-    var puns;
-    $.getJSON('puns.json', function(response) {
-        puns = response;
-        $(window).trigger('JSONready');
-    });
 
-    function getPun() {
-      $("#lat").text(puns[Math.floor(Math.random() * puns.length)]);
+    function getWeather() {
+      var city = $("#loc").val();
+      $("#results").empty();
+      $.getJSON(url + city, function(data) {
+          console.log(data);
+          if (data.cod == 200) {
+            var temp = kelvinToFahrenheit(data.main.temp).toFixed(1);
+            $('<div class="temperature">').appendTo('#results')
+                .html("It is currently " + temp + "&deg;F");
+            $('<div class="summary">').appendTo('#results')
+                .text("Humidity is at " + data.main.humidity + "%");
+            if (data.wind.speed > 10) {
+                $('<div class="summary">').appendTo('#results')
+                    .text("Watch out. It's windy.");
+            }
+
+            // This block loops over optional weather descriptions
+            if (data.weather.length > 0) {
+              for (var i = 0; i < data.weather.length; i++ ) {
+                console.log(puns[i]);
+                $('<div class="summary">').appendTo('#results')
+                    .text(data.weather[i].description);
+              }
+            }
+
+            //$('<div class="lat">').appendTo('#results').text("Lat: " + data.coord.lat);
+            //$('<div class="long">').appendTo('#results').text("Long: " + data.coord.lon);
+          } else {
+          $('<div class="error">').appendTo('#results')
+              .html("Sorry. Unable to identify that location. Please try again.");
+          }
+      });
     };
 
-    $(window).on('JSONready', function() {
-      for (var i = 0; i < puns.length; i++ ) {
-        console.log(puns[i]);
-      }
-    });
+    function getPun() {
+      $("#results").empty();
+      $("#loc").val("");
+      $('<div class="pun">').appendTo('#results')
+          .html(puns[Math.floor(Math.random() * puns.length)]);
+      $('<div class="pun-source">').appendTo('#results')
+          .html('Puns provided by <a href="http://www.punoftheday.com">Pun of the Day</a>');
+    };
 
   </script>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-24824336-4', 'bnjmn.github.io');
+    ga('send', 'pageview');
+  </script>
+
   </body>
 </html>

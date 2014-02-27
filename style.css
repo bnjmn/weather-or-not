@@ -1,20 +1,40 @@
 body {
   font-family: Tahoma, Geneva, sans-serif;
   background-color: #eee;
+  padding: 35px 30px;
 }
 
 .content {
   margin: 10px auto;
-  max-width: 800px;
-}
-
-header {
+  max-width: 580px;
   text-align: center;
 }
 
-#temp {
-  font-size: 80px;
+h1 {
+  font-size: 58px;
 }
-.results {
-  font-size: 55px;
+
+input {
+  font-size: 35px;
+}
+button {
+  background: #4479BA;
+  font-size: 25px;
+  margin: 10px 15px;
+  padding: 10px 15px;
+  color: #FFF;
+}
+
+#results {
+  font-size: 25px;
+}
+.temperature {
+  font-size: 35px;
+}
+.pun {
+  padding: 30px 0px;
+}
+.pun-source {
+  padding: 30px 0px;
+  font-size: 15px;
 }
