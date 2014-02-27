@@ -1,12 +1,12 @@
 body {
-  font-family: Tahoma, Geneva, sans-serif;
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   background-color: #eee;
   padding: 35px 30px;
 }
 
 .content {
   margin: 10px auto;
-  max-width: 580px;
+  max-width: 640px;
   text-align: center;
 }
 
@@ -27,12 +27,10 @@ button {
 
 #results {
   font-size: 25px;
+  padding: 30px 0px;
 }
 .temperature {
   font-size: 35px;
-}
-.pun {
-  padding: 30px 0px;
 }
 .pun-source {
   padding: 30px 0px;

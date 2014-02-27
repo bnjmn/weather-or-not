@@ -11,7 +11,7 @@
     <div class="content">
         <h1>Weather or Not?</h1>
         <div class="locationForm">
-          <input type="text" id="loc" name="location" placeholder="Enter a city and press enter" autofocus autocomplete="off"/>
+          <input type="text" id="loc" name="location" placeholder="Enter a city" autofocus autocomplete="off"/>
           <div class="buttons">
             <button id="submit" onclick="getWeather()">Weather, please</button>
             <button id="not" onclick="getPun()">Not</button>
@@ -41,35 +41,37 @@
     };
 
     function getWeather() {
+
       var city = $("#loc").val();
       $("#results").empty();
+
       $.getJSON(url + city, function(data) {
-          console.log(data);
+          //console.log(data);
+
           if (data.cod == 200) {
+
             var temp = kelvinToFahrenheit(data.main.temp).toFixed(1);
             $('<div class="temperature">').appendTo('#results')
                 .html("It is currently " + temp + "&deg;F");
             $('<div class="summary">').appendTo('#results')
                 .text("Humidity is at " + data.main.humidity + "%");
-            if (data.wind.speed > 10) {
+            if (data.wind.speed > 8) {
                 $('<div class="summary">').appendTo('#results')
-                    .text("Watch out. It's windy.");
+                    .text("It's windy out there.");
             }
 
             // This block loops over optional weather descriptions
             if (data.weather.length > 0) {
               for (var i = 0; i < data.weather.length; i++ ) {
-                console.log(puns[i]);
                 $('<div class="summary">').appendTo('#results')
-                    .text(data.weather[i].description);
+                    .text("(" + data.weather[i].description + ")");
               }
             }
-
             //$('<div class="lat">').appendTo('#results').text("Lat: " + data.coord.lat);
             //$('<div class="long">').appendTo('#results').text("Long: " + data.coord.lon);
           } else {
           $('<div class="error">').appendTo('#results')
-              .html("Sorry. Unable to identify that location. Please try again.");
+              .html("Sorry. Unable to identify location. Please try again.");
           }
       });
     };
@@ -77,6 +79,8 @@
     function getPun() {
       $("#results").empty();
       $("#loc").val("");
+
+      // Randomly select a pun
       $('<div class="pun">').appendTo('#results')
           .html(puns[Math.floor(Math.random() * puns.length)]);
       $('<div class="pun-source">').appendTo('#results')
@@ -84,16 +88,13 @@
     };
 
   </script>
-
   <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
     ga('create', 'UA-24824336-4', 'bnjmn.github.io');
     ga('send', 'pageview');
   </script>
-
   </body>
 </html>
